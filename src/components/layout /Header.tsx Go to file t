@@ -1,0 +1,113 @@
+import { Button } from "@/components/ui/button";
+import { Coins, Menu, User, Wallet } from "lucide-react";
+import { useState } from "react";
+
+interface HeaderProps {
+  isAuthenticated?: boolean;
+  coinBalance?: number;
+  kesBalance?: number;
+  onLogin?: () => void;
+  onSignup?: () => void;
+  onProfile?: () => void;
+}
+
+export const Header = ({ 
+  isAuthenticated = false, 
+  coinBalance = 0, 
+  kesBalance = 0,
+  onLogin,
+  onSignup,
+  onProfile 
+}: HeaderProps) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  return (
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex h-16 items-center justify-between">
+        {/* Logo */}
+        <div className="flex items-center space-x-2">
+          <div className="h-8 w-8 rounded-lg bg-gradient-primary flex items-center justify-center">
+            <span className="text-white font-bold text-lg">R</span>
+          </div>
+          <span className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+            Rahl
+          </span>
+        </div>
+
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center space-x-4">
+          {isAuthenticated ? (
+            <>
+              <div className="flex items-center space-x-2 bg-card px-4 py-2 rounded-lg shadow-card">
+                <Coins className="h-4 w-4 text-accent" />
+                <span className="font-medium">{coinBalance}</span>
+                <span className="text-muted-foreground">coins</span>
+              </div>
+              <div className="flex items-center space-x-2 bg-success/10 px-4 py-2 rounded-lg">
+                <Wallet className="h-4 w-4 text-success" />
+                <span className="font-medium text-success">KES {kesBalance.toFixed(2)}</span>
+              </div>
+              <Button variant="ghost" size="icon" onClick={onProfile}>
+                <User className="h-4 w-4" />
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button variant="ghost" onClick={onLogin}>
+                Login
+              </Button>
+              <Button variant="hero" onClick={onSignup}>
+                Sign Up
+              </Button>
+            </>
+          )}
+        </div>
+
+        {/* Mobile Menu Button */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="md:hidden"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+        >
+          <Menu className="h-4 w-4" />
+        </Button>
+      </div>
+
+      {/* Mobile Menu */}
+      {isMenuOpen && (
+        <div className="md:hidden border-t bg-background">
+          <div className="container py-4 space-y-4">
+            {isAuthenticated ? (
+              <>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <Coins className="h-4 w-4 text-accent" />
+                    <span>{coinBalance} coins</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Wallet className="h-4 w-4 text-success" />
+                    <span className="text-success">KES {kesBalance.toFixed(2)}</span>
+                  </div>
+                </div>
+                <Button variant="outline" className="w-full" onClick={onProfile}>
+                  <User className="h-4 w-4 mr-2" />
+                  Profile
+                </Button>
+              </>
+            ) : (
+              <div className="space-y-2">
+                <Button variant="outline" className="w-full" onClick={onLogin}>
+                  Login
+                </Button>
+                <Button variant="hero" className="w-full" onClick={onSignup}>
+                  Sign Up
+                </Button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </header>
+  );
+};
